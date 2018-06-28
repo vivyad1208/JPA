@@ -1,0 +1,8 @@
+
+
+-> Discriminates the entry of the respective entity using the column name
+
+Discrimination
+-> @DiscriminatorColumn( name = "stype" ) (Staff)
+-> @DiscriminatorValue(value="TS")			(Teaching Staff)
+-> @DiscriminatorValue(value="NS")			(Non Teaching Staff)
