@@ -10,10 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQuery(name="getCourseByName",query="FROM Course WHERE courseName=:courseName")
+@NamedQueries({
+	@NamedQuery(name="getCourseByNames",query="FROM Course WHERE courseName LIKE :courseName"),
+	@NamedQuery(name="getCourseByName",query="FROM Course WHERE courseName=:courseName")
+})
 public class Course implements EntityInterface {
 
 	@Id

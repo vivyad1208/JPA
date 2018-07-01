@@ -1,6 +1,7 @@
 package hbm.persistence.service;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,6 +31,7 @@ public class MappingManyToManyCourseStudent {
 			queryStudent.setParameter("name", "Priyanka Manjrekar");
 			Student student = queryStudent.getSingleResult();
 
+			// Get Single Result
 			queryCourse = session.createNamedQuery("getCourseByName");
 			queryCourse.setParameter("courseName", "Database");
 			Course course = queryCourse.getSingleResult();			
@@ -37,9 +39,18 @@ public class MappingManyToManyCourseStudent {
 			System.out.println(student);
 			System.out.println(course);
 
-			course.setStudents(Arrays.asList(student));
-			session.update(course);
+			student.setCourses(Arrays.asList(course));
+			session.persist(course);
+			// session.save(course); 
 			transaction.commit();
 		}
+	}
+
+	public static List<Course> getSingleCourseAsList(Session session) {
+		@SuppressWarnings("unchecked")
+		Query<Course> queryCourse = session.createNamedQuery("getCourseByName");
+		queryCourse.setParameter("courseName", "Database");
+		Course course = (Course) queryCourse.getSingleResult();
+		return Arrays.asList(course);
 	}
 }
