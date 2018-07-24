@@ -15,20 +15,20 @@ public class ServiceDepartmentEmployee {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
-		Transaction transaction;
 		Query<Student> queryStudent;
 		Query<Course> queryCourse;
 
-		try (
-			SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-			Session session = sessionFactory.openSession();
-		)
-		{
+		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		Transaction transaction = null;
+		try {
 			transaction = session.beginTransaction();
-
 			queryStudent = session.createNamedQuery("getStudentByName");
-			queryStudent.setParameter("name", "Priyanka Manjrekar");
+			queryStudent.setParameter("name", "Priyanka");
 			Student student = queryStudent.getSingleResult();
+
+			if(student!=null)
+				throw new Exception();
 
 			queryCourse = session.createNamedQuery("getCourseByName");
 			queryCourse.setParameter("courseName", "Database");
@@ -40,6 +40,15 @@ public class ServiceDepartmentEmployee {
 			course.setStudents(Arrays.asList(student));
 			session.update(course);
 			transaction.commit();
+		}
+		catch(Exception ex) {
+			if(transaction!=null && transaction.isActive())
+				transaction.rollback();
+			System.err.println(ex);
+		}
+		finally {
+			session.close();
+			sessionFactory.close();
 		}
 		
 	}

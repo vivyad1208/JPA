@@ -14,25 +14,28 @@ import hbm.persistence.entity.Student;
 
 public class MappingManyToManyCourseStudent {
 
-	@SuppressWarnings({ "unchecked" })
 	public static void main(String[] args) {
-		Transaction transaction;
-		Query<Student> queryStudent;
-		Query<Course> queryCourse;
+		List list = getSingleCourseAsList();
+		System.out.println(list);
+	}
 
-		try (
-			SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-			Session session = sessionFactory.openSession();
-		)
-		{
+
+	public void enrollStudentToCourse() {
+		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+
+		try{
 			transaction = session.beginTransaction();
 
-			queryStudent = session.createNamedQuery("getStudentByName");
-			queryStudent.setParameter("name", "Priyanka Manjrekar");
+			@SuppressWarnings("unchecked")
+			Query<Student> queryStudent = session.createNamedQuery("getStudentByName");
+			queryStudent.setParameter("name", "Priyanka");
 			Student student = queryStudent.getSingleResult();
 
 			// Get Single Result
-			queryCourse = session.createNamedQuery("getCourseByName");
+			@SuppressWarnings("unchecked")
+			Query<Course> queryCourse = session.createNamedQuery("getCourseByName");
 			queryCourse.setParameter("courseName", "Database");
 			Course course = queryCourse.getSingleResult();			
 
@@ -44,13 +47,27 @@ public class MappingManyToManyCourseStudent {
 			// session.save(course); 
 			transaction.commit();
 		}
+		catch(Exception ex) {
+			if(transaction!=null && transaction.isActive())
+				transaction.rollback();
+		}
+		finally {
+			session.close();
+			sessionFactory.close();
+		}
 	}
 
-	public static List<Course> getSingleCourseAsList(Session session) {
-		@SuppressWarnings("unchecked")
-		Query<Course> queryCourse = session.createNamedQuery("getCourseByName");
-		queryCourse.setParameter("courseName", "Database");
-		Course course = (Course) queryCourse.getSingleResult();
-		return Arrays.asList(course);
+
+	public static List<Course> getSingleCourseAsList() {
+		try (
+			SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+			Session session = sessionFactory.openSession();
+		) {
+			@SuppressWarnings("unchecked")
+			Query<Course> queryCourse = session.createNamedQuery("getCourseByName");
+			queryCourse.setParameter("courseName", "Database");
+			Course course = queryCourse.getSingleResult();
+			return Arrays.asList(course);
+		}
 	}
 }

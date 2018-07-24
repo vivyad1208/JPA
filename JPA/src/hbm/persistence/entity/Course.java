@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+
+import org.hibernate.collection.internal.PersistentBag;
 
 @Entity
 @NamedQueries({
@@ -30,7 +33,7 @@ public class Course implements EntityInterface {
 	private Time endTime;
 	private int fees;
 
-	@ManyToMany(targetEntity=Student.class)
+	@ManyToMany(targetEntity=Student.class, fetch=FetchType.EAGER)
 	@JoinTable(name="Enrolled", joinColumns={@JoinColumn(name="courseId")}, inverseJoinColumns={@JoinColumn(name="studentId")})
 	private List<Student> students;
 
@@ -88,9 +91,13 @@ public class Course implements EntityInterface {
 	}
 
 	public String toString() {
-		return "Course Name:"+courseName+", Fees:"+fees+", StartTime:"+startTime+", EndTime:"+endTime+", "+
-				"Students: "+students+
-				(active==1?" Active":" InActive");
+		String student;
+		if(students!=null && !students.getClass().isInstance(PersistentBag.class))
+			student = "\nStudents: "+students;
+		else
+			student = "";
+		return "Course Name:"+courseName+", Fees:"+fees+", StartTime:"+startTime+", EndTime:"+endTime+ ", Status: "+
+					(active==1?"OnGoing":"Halted") + student;
 	}
 
 	

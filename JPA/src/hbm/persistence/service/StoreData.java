@@ -39,9 +39,9 @@ public class StoreData {
 		}});
 
 		// Department -> put("departmentName","Management");
-		// Employee -> put("name","Priyanka Manjrekar"); put("age",31); put("departmentName","Management");
+		// Employee -> put("name","Priyanka"); put("age",31); put("departmentName","Management");
 		// Course -> put("startTime","10:00:00"); put("endTime","11:00:00");
-		// Student -> put("name","Priyanka Manjrekar"); put("age",31);
+		// Student -> put("name","Priyanka"); put("age",31);
 	}
 
 
